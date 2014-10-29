@@ -10,7 +10,7 @@ static char *reverse(char *s);  /* Ex. 5-6 */
 
 int main(void)
 {
-  char s[SIZE]="Hello, ", t[SIZE]="world";
+  char s[SIZE] = "Hello, ", t[SIZE] = "world";
 
   strcat(s, t);
   printf("after strcat %s\n", s, t);

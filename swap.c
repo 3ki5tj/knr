@@ -1,11 +1,12 @@
 #include <stdio.h>
-#define swap(t, x, y) { t z; z=x; x=y; y=z; }
+
+#define swap(type, x, y) { type z; z = (x), (x) = (y), (y) = z; }
 
 int main(void)
 {
   int i = 2, j = 5;
   float x = 3.14159, y = 2.71828;
-  char *s="Hello", *t="World";
+  const char *s = "Hello", *t = "World";
 
   printf("before: %d, %d\n", i, j);
   swap(int, i, j);
@@ -16,7 +17,7 @@ int main(void)
   printf("after:  %f, %f\n", x, y);
 
   printf("before: %s, %s\n", s, t);
-  swap(char *, s, t);
+  swap(const char *, s, t);
   printf("after:  %s, %s\n", s, t);
   return 0;
 }
