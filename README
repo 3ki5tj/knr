@@ -1,0 +1,15 @@
+Selected answers to exercises in the book The C Programming Language (Second Edition)
+by Brian W. Kernighan, Dennis M. Ritchie (often refered to as K&R).
+
+Symbolic links with names matching the exercise numbers are made to
+the actual source code, e.g., the code for exercise 2-9 is ex2-9.c,
+which is a symbolic link to the actual source code bits.c.
+
+Reference:
+http://users.powernet.co.uk/eton/kandr2/
+
+Personal favorite lists:
+ex2-1: limits.c   template-like programming
+ex2-6 to 2-9: bits.c   fun
+ex3-3: expand.c   succinct code (no brace)
+
