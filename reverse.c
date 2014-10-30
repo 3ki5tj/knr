@@ -1,6 +1,21 @@
 #include <stdio.h>
 
-static void reverse(char *);
+static void reverse_low(char *s, char *t)
+{
+  char c;
+
+  if (s >= t) return;
+  c = *s, *s = *t, *t =  c;
+  reverse_low(s + 1, t - 1);
+}
+
+static void reverse(char *s)
+{
+  char *t;
+
+  for (t = s; *t; t++) ;
+  reverse_low(s, t - 1);
+}
 
 int main(void)
 {
@@ -12,21 +27,3 @@ int main(void)
   return 0;
 }
 
-static void reverse_low(char *s, char *t)
-{
-  char c;
-  if (s >= t)
-    return;
-   c = *s;
-  *s = *t;
-  *t =  c;
-  reverse_low(s + 1, t - 1);
-}
-
-void reverse(char *s)
-{
-  char *t;
-
-  for (t = s; *t; t++) ;
-  reverse_low(s, t - 1);
-}
