@@ -13,7 +13,8 @@
 static int table[1u << CHAR_BIT];
 #define tp(c) table[(c) - CHAR_MIN]
 
-void install_table(void) {
+static void install_table(void)
+{
   char c;
 
   for (c = 'a'; c <= 'z'; c++) tp(c) = 'a';
@@ -21,7 +22,7 @@ void install_table(void) {
   for (c = '0'; c <= '9'; c++) tp(c) = '0';
 }
 
-void expand(const char *s1, char *s2)
+static void expand(const char *s1, char *s2)
 {
   int c, cp, sgn;
 
@@ -33,7 +34,7 @@ void expand(const char *s1, char *s2)
 }
 
 /* expand0: simpler version that does not support z-a */
-void expand0(const char *s1, char *s2)
+static void expand0(const char *s1, char *s2)
 {
   int c, cp;
 
@@ -45,7 +46,8 @@ void expand0(const char *s1, char *s2)
 
 int main(int argc, char *argv[])
 {
-  char *src = "a-z0-9", s0[256] = "", s1[256] = "";
+  const char *src = "a-z0-9";
+  char s0[256] = "", s1[256] = "";
 
   if (argc > 1) src = argv[1];
 

@@ -7,15 +7,13 @@ static int getline_if(char s[], int lim)
   int c, i;
 
   for (i = 0; i < lim - 1; i++)
-    if ((c = getchar()) == EOF)
-      break;
-    else if (c == '\n')
+    if ((c = getchar()) == EOF || c == '\n')
       break;
     else
-      s[i] = c;
-  if (c=='\n')
-    s[i++]='\n';
-  s[i]='\0';
+      s[i] = (char) c;
+  if (c == '\n')
+    s[i++] = '\n';
+  s[i] = '\0';
   return i;
 }
 

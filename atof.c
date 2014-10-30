@@ -1,24 +1,9 @@
 /* Ex. 4-2 $4.2 */
 #include <stdio.h>
-
-static double atof(const char *s);
-
-int main(int argc, char *argv[])
-{
-  char *s = "123.45e-6";
-  double x;
-
-  if (argc >= 2)
-    s = argv[1];
-  x = atof(s);
-  printf("atof(%s)=%.14e\n", s, x);
-  return 0;
-}
-
 #include <ctype.h>
 
 /* atof: convert string s to double */
-double atof(const char *s)
+static double atof(const char *s)
 {
   double val, power;
   int sign, psign, e;
@@ -44,4 +29,15 @@ double atof(const char *s)
   for (; e; e--)
     power *= psign > 0 ? 10.0 : 0.1;
   return sign * val * power;
+}
+
+int main(int argc, char *argv[])
+{
+  const char *s = "123.45e-6";
+  double x;
+
+  if (argc >= 2) s = argv[1];
+  x = atof(s);
+  printf("atof(%s)=%.14e\n", s, x);
+  return 0;
 }

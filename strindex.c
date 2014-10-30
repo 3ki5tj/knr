@@ -1,25 +1,8 @@
 /* Ex. 4.1 $4.1; Ex. 5-6 $5.5 */
 #include <stdio.h>
 
-static int strindex(const char *s, const char *t);
-static int strrindex(const char *s, const char *t);
-
-int main(int argc, char *argv[])
-{
-  char *s="Hello, hello!", *t="lo";
-  int i, ir;
-
-  if (argc >= 3) s = argv[1], t = argv[2];
-  i = strindex(s, t);
-  ir = strrindex(s, t);
-  printf("index strindex(\"%s\", \"%s\")=%d strrindex(\"%s\", \"%s\")=%d\n",
-      s, t, i, s, t, ir);
-
-  return 0;
-}
-
 /* strindex: return index of t in s, -1 if none */
-int strindex(const char *s, const char *t)
+static int strindex(const char *s, const char *t)
 {
   const char *r, *p, *q;
 
@@ -33,7 +16,7 @@ int strindex(const char *s, const char *t)
 }
 
 /* strindex: return index of t in s from right, -1 if none */
-int strrindex(const char *s, const char *t)
+static int strrindex(const char *s, const char *t)
 {
   const char *r, *p, *q, *sz, *tz;
 
@@ -50,5 +33,19 @@ int strrindex(const char *s, const char *t)
       return p - s + 1;
   }
   return -1;
+}
+
+int main(int argc, char *argv[])
+{
+  const char *s = "Hello, hello!", *t = "lo";
+  int i, ir;
+
+  if (argc >= 3) s = argv[1], t = argv[2];
+  i = strindex(s, t);
+  ir = strrindex(s, t);
+  printf("index strindex(\"%s\", \"%s\")=%d strrindex(\"%s\", \"%s\")=%d\n",
+      s, t, i, s, t, ir);
+
+  return 0;
 }
 

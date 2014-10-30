@@ -20,4 +20,5 @@ $(bins_d) : %_d: %.c $(deps)
 
 clean:
 	rm -rf $(bins) $(bins_d) *~ a.out bin obj r[0-9][0-9][0-9][a-z]*
+	rstrip.py -Rlv
 

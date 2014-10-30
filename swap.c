@@ -5,7 +5,7 @@
 int main(void)
 {
   int i = 2, j = 5;
-  float x = 3.14159, y = 2.71828;
+  double x = 3.14159, y = 2.71828;
   const char *s = "Hello", *t = "World";
 
   printf("before: %d, %d\n", i, j);

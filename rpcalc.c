@@ -1,20 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include <math.h>
+#include <float.h>
 
 #define OPSIZE  256
 enum{
-NUMBER   = '0',
-NEG      = '~',  /* negative sign */
-PEEK     = '?',  /* peek top without popping */
-SWAP     = '$',  /* swap the top two operators */
-CLEAR    = '!',  /* clear the stack */
-ASSIGN   = '=',  /* assignment */
-VAR      = 'a',  /* variable */
-RECENT   = '#',  /* recent variable */
-MATH0    = 1000, /* mathematical constants */
-MATH1    = 1001, /* mathematical functions take one argument */
-MATH2    = 1002, /* mathematical functions take two arguments */
+  NUMBER   = '0',
+  NEG      = '~',  /* negative sign */
+  PEEK     = '?',  /* peek top without popping */
+  SWAP     = '$',  /* swap the top two operators */
+  CLEAR    = '!',  /* clear the stack */
+  ASSIGN   = '=',  /* assignment */
+  VAR      = 'a',  /* variable */
+  RECENT   = '#',  /* recent variable */
+  MATH0    = 1000, /* mathematical constants */
+  MATH1    = 1001, /* mathematical functions that take one argument */
+  MATH2    = 1002  /* mathematical functions that take two arguments */
 };
 
 static int varid = -1;
@@ -41,86 +44,6 @@ static void push(double);
 #define peek() popx(0)
 static double popx(int);
 static void clearstack(void);
-
-/* reverse Polish calculator */
-int main(void)
-{
-  int type;
-  double x, y;
-  char s[OPSIZE];
-
-  while ((type = getop(s)) != EOF) {
-    switch (type) {
-    case NUMBER:
-      push(atof(s));
-      break;
-    case VAR:
-      push(vars[varid]);
-      break;
-    case '+':
-      y = pop();
-      push(pop() + y);
-      break;
-    case '*':
-      y = pop();
-      push(pop() * y);
-      break;
-    case '-':
-      y = pop();
-      push(pop() - y);
-      break;
-    case '/':
-      y = pop();
-      if (y != 0.0)
-        push(pop() / y);
-      else
-        printf("error: divided by zero\n");
-      break;
-    case '%':
-      y = pop();
-      if (y != 0.0)
-        push( fmod(x, y) );
-      else
-        printf("error: divided by zero\n");
-      break;
-    case MATH0:
-      push( math[mathid].val );
-      break;
-    case MATH1:
-      x = pop();
-      push( (*math[mathid].func1)(x) );
-      break;
-    case MATH2:
-      y = pop();
-      x = pop();
-      push( (*math[mathid].func2)(x, y) );
-      break;
-    case ASSIGN:
-      pop();
-      vars[varid] = peek();
-      break;
-    case PEEK:
-      printf("\t%.15g\n", vars[RECENT] = peek());
-      break;
-    case SWAP:
-      y = pop();
-      x = pop();
-      push(y);
-      push(x);
-      break;
-    case CLEAR:
-      clearstack();
-      break;
-    case '\n':
-      printf("\t%.15g\n", vars[RECENT] = pop());
-      break;
-    default:
-      printf("error: unknown symbol %s\n", s);
-      break;
-    }
-  }
-  return 0;
-}
 
 #define STACKSIZE 128
 int sp = 0;  /* current free position in the stack */
@@ -156,8 +79,6 @@ void clearstack(void)
   printf("stack is cleared\n");
 }
 
-#include <ctype.h>
-#include <string.h>
 
 #define GCBUFSIZE 128
 static int gcstack[GCBUFSIZE];
@@ -203,7 +124,7 @@ int getop(char *s)
 {
   int i, c, cn;
 
-  while ((c = getch()) == ' ' || c == '\t' || c =='\r')
+  while ((c = getch()) == ' ' || c == '\t' || c == '\r')
     ;
   s[0] = (char) c;
   s[1] = '\0'; /* terminate the string */
@@ -213,7 +134,7 @@ int getop(char *s)
   if (c == RECENT && isvar(s)) /* call isvar() to set varid */
     return VAR;
   if (c == PEEK || c == CLEAR) {  /* these commands eat a following '\n' */
-    while (isspace(cn = getch()) && cn != '\n')
+    while ((cn = getch()) != '\n' && isspace(cn))
       ;
     if (cn != '\n')
       ungetch(cn);
@@ -221,7 +142,7 @@ int getop(char *s)
   }
 
   if (isalpha(c)) {
-    for (i = 0; isalpha(s[++i] = (char)(c = getch())) ;)
+    for (i = 1; s[i] = (char) (c = getch()), isalpha(c); i++)
       ;
     s[i] = '\0';
     ungetch(c);
@@ -237,10 +158,10 @@ int getop(char *s)
     return c; /* an operator */
   i = 0;
   if (isdigit(c) || c == NEG) /* collect the integer part */
-    while ( isdigit(s[++i] = (char)(c = getch())) )
+    for (i++; s[i] = (char) (c = getch()), isdigit(c); i++)
       ;
   if (c == '.')
-    while ( isdigit(s[++i] = (char)(c = getch())) )
+    for (i++; s[i] = (char) (c = getch()), isdigit(c); i++)
       ;
   s[i] = '\0';
   if (c != EOF)
@@ -248,5 +169,85 @@ int getop(char *s)
   if (s[0] == NEG)
     s[0] = '-';
   return NUMBER;
+}
+
+/* reverse Polish calculator */
+int main(void)
+{
+  int type;
+  double x, y;
+  char s[OPSIZE];
+
+  while ((type = getop(s)) != EOF) {
+    switch (type) {
+    case NUMBER:
+      push(atof(s));
+      break;
+    case VAR:
+      push(vars[varid]);
+      break;
+    case '+':
+      y = pop();
+      push(pop() + y);
+      break;
+    case '*':
+      y = pop();
+      push(pop() * y);
+      break;
+    case '-':
+      y = pop();
+      push(pop() - y);
+      break;
+    case '/':
+      y = pop();
+      if (fabs(y) > DBL_MIN)
+        push(pop() / y);
+      else
+        printf("error: divided by zero\n");
+      break;
+    case '%':
+      y = pop();
+      if (fabs(y) > DBL_MIN)
+        push( fmod(x, y) );
+      else
+        printf("error: divided by zero\n");
+      break;
+    case MATH0:
+      push( math[mathid].val );
+      break;
+    case MATH1:
+      x = pop();
+      push( (*math[mathid].func1)(x) );
+      break;
+    case MATH2:
+      y = pop();
+      x = pop();
+      push( (*math[mathid].func2)(x, y) );
+      break;
+    case ASSIGN:
+      pop();
+      vars[varid] = peek();
+      break;
+    case PEEK:
+      printf("\t%.15g\n", vars[RECENT] = peek());
+      break;
+    case SWAP:
+      y = pop();
+      x = pop();
+      push(y);
+      push(x);
+      break;
+    case CLEAR:
+      clearstack();
+      break;
+    case '\n':
+      printf("\t%.15g\n", vars[RECENT] = pop());
+      break;
+    default:
+      printf("error: unknown symbol %s\n", s);
+      break;
+    }
+  }
+  return 0;
 }
 
